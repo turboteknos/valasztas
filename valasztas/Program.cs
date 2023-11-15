@@ -87,7 +87,7 @@ namespace valasztas
                 {
                     szavazat.Add(new Szavazatok(Convert.ToByte(rdr[0]), Convert.ToInt32(rdr[1]), rdr[2].ToString(), rdr[3].ToString(), rdr[4].ToString()));
                 }
-
+                Console.WriteLine("Sikeres kapcsolódás");
             }
             catch (Exception ex)
             {
