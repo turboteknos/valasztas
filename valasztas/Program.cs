@@ -1,4 +1,7 @@
-﻿namespace valasztas
+﻿using MySql.Data.MySqlClient;
+using System.Security.Cryptography;
+
+namespace valasztas
 {
     internal class Program
     {
@@ -7,7 +10,7 @@
         static void Main(string[] args)
         {
             FeladatKiir(1, "Fájl beolvasása...");
-            Fajlfeltolt();
+            FajlFeltoltSQL();
 
             FeladatKiir(2, $"A helyhatósági választáson {szavazat.Count} képviselőjelölt indult.");
 
@@ -66,6 +69,35 @@
 
 
 
+        }
+
+        static void FajlFeltoltSQL()
+        {
+            string connStr = "server=localhost;userid=root;password=;database=valasztasok";
+
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("Kapcsolódás az adatbázishoz...");
+                conn.Open();
+                var sql = "SELECT * FROM szavazatok_txt";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                MySqlDataReader rdr=cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    szavazat.Add(new Szavazatok(Convert.ToByte(rdr[0]), Convert.ToInt32(rdr[1]), rdr[2].ToString(), rdr[3].ToString(), rdr[4].ToString()));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Sikertelen kapcsolódás");
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
 
         static string F3(string knev, string vnev)
